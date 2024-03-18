@@ -18,6 +18,8 @@ taskRouter.get('/tasks/:id', getTaskById);
 taskRouter.post('/tasks', createTask);
 taskRouter.put('/tasks/:id', deleteTask);
 taskRouter.delete('/tasks/:id', updateTask);
+taskRouter.get('/ping', async (req, res) => res.json({pong: true}));
+
 
 // Use the taskRouter for paths starting with '/api'
 app.use(taskRouter);
