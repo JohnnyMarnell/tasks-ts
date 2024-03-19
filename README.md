@@ -1,6 +1,10 @@
 # To-Do App with TypeScript Backend
 
+Attempt at making a modern TypeScript + Postgres backed micro service API for ToDo's
+
 ## Commands
+
+See [./package.json] of course for some example commands, e.g. `pnpm dev` to run local, watchable, debuggable instace via `tsx`. Docker-Compose also works.
 
 ```bash
 # Start database and other containers
@@ -20,17 +24,16 @@ docker-compose exec -it db psql $db_conn
 docker-compose exec -it db psql $db_conn -c 'select * from tasks'
 ```
 
-# Questions
+# Questions / ToDos ToDos
 
-- docker-compose container for typescript
-- original structure from example repo had code duplication for "routes/index". bad bug. and weird. i removed it
-- tsconfig via extending a base
-- pnpm is ok choice ya? i like the space opt
+- database.js pool as imported module?
+- tests... jest ok for simple integration test of API calls? Mocha?
 - file naming & org typical? e.g. src/, index, src/(controllers|routes)/, index.controllers.ts, "database.ts"
-- how to set up docker-compose smart + easy?
+- original structure from example repo had code duplication for "routes/index". bad bug. and weird. i removed it
+- pnpm is ok choice ya? i like the space opt
 - no semi colons ok?
-- syntax formatting and linting
-- i changed ts-node to tsx
-- removed nodemon, is this a thing? speaking of:
-- hot reload best practices?
-- handle the default is incomplete for task, currently OR pipe, redundant since database scheme effectively defines the default. but how to balance code looking weird(er)
+- `tsx` seems modern fast choice?
+- handle the default for a new Task is incomplete (complete == false), currently using OR pipe in controller, redundant since database scheme effectively defines the default. but how to balance code looking weird(er)?
+- ✅ docker-compose container for typescript, close enough
+- ✅ tsconfig via extending a base
+- ✅ code formatting

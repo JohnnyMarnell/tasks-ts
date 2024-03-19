@@ -1,5 +1,5 @@
-import express, { Router, ErrorRequestHandler } from "express"
-import * as routes from "./controllers/index.controllers"
+import express, { ErrorRequestHandler } from "express"
+import * as tasks from "./controllers/tasks"
 import crypto from "crypto"
 
 // Configure middleware for parsing JSON and URL-encoded data
@@ -8,14 +8,15 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 // Define routes
-app.get("/tasks", routes.getTasks)
-app.get("/tasks/:id", routes.getTaskById)
-app.post("/tasks", routes.createTask)
-app.put("/tasks/:id", routes.updateTask)
-app.delete("/tasks/:id", routes.deleteTask)
+app.get("/tasks", tasks.getTasks)
+app.get("/tasks/:id", tasks.getTaskById)
+app.post("/tasks", tasks.createTask)
+app.put("/tasks/:id", tasks.updateTask)
+app.delete("/tasks/:id", tasks.deleteTask)
+
 app.get("/ping", async (req, res) => res.json({ pong: true }))
 
-// I'd like a generic error handler, and have yet to get this to work
+// I'd like a generic error handler, and have yet to get this to work at all
 const error: ErrorRequestHandler = async (err, req, res, next) => {
   const errorId = crypto
     .createHash("md5")

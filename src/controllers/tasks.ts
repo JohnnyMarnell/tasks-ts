@@ -21,6 +21,7 @@ export const createTask: Handler = async (req, res) => {
   return res.status(201).json({ id: qr.rows[0].task_id })
 }
 
+// Todo handle selective updates
 export const updateTask: Handler = async (req, res) => {
   const { id } = req.params
   const { title, description, completed } = req.body
