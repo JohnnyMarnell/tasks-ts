@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "tsx src/index.ts",
+    "dev": "tsx watch --clear-screen=false src",
     "build": "tsc"
   },
   "keywords": [],

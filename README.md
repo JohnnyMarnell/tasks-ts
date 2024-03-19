@@ -8,10 +8,14 @@ docker-compose up
 # Add to-do
 curl -H 'Content-Type: application/json' -v localhost:3000/tasks -d '{"title":"Do Homework", "description":"Study for math test"}'
 
-# Connect to PSQL shell to container
-docker-compose exec -it db psql 'postgresql://todo_user@localhost:5432/todo_db'
+# Set a db conn string var
+db_conn=$(echo "$(cat .env | xargs) echo 'postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}'" | bash) ; echo $db_conn
+
+# Connect to PSQL shell in Postgres container
+docker-compose exec -it db psql $db_conn
+
 # Query DB
-docker-compose exec -it db psql 'postgresql://todo_user@localhost:5432/todo_db' -c 'select * from tasks'
+docker-compose exec -it db psql $db_conn -c 'select * from tasks'
 ```
 
 # Questions
