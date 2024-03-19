@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   api:
-    image: node:21
+    image: node:20
     working_dir: /home/node/app
     env_file:
       - ./.env
@@ -13,6 +13,7 @@ services:
       - ./package.json:/home/node/app/package.json
     ports:
       - "3000:3000"
+      - "9229:9229"
     command: bash -c "echo 'Node app starting...' && npm install && npm run dev"
 
   db:

@@ -1,96 +1,39 @@
-import { Request, Response } from "express"
-import { QueryResult } from "pg"
-import { pool } from "../database"
+import { Handler } from "express"
+import { db } from "../database"
 
-export const getTasks = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
-  try {
-    const response: QueryResult = await pool.query("SELECT * FROM tasks")
-    return res.status(200).json(response.rows)
-  } catch (error) {
-    console.error(error)
-    return res.status(500).json("Internal Server error")
-  }
+export const getTasks: Handler = async (req, res) => {
+  const qr = await db.query("SELECT * FROM tasks")
+  return res.status(200).json(qr.rows)
 }
 
-export const getTaskById = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
-  const id = req.params.id
-  const response: QueryResult = await pool.query(
-    "SELECT * FROM tasks WHERE task_id = $1",
-    [id],
-  )
-  return res.json(response.rows)
+export const getTaskById: Handler = async (req, res) => {
+  const { id } = req.params
+  const qr = await db.query("SELECT * FROM tasks WHERE task_id = $1", [id])
+  return qr.rowCount ? res.json(qr.rows) : res.status(404).send()
 }
 
-export const createTask = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
+export const createTask: Handler = async (req, res) => {
   const { title, description, completed } = req.body
-  const dbResult = await pool.query(
+  const qr = await db.query(
     "INSERT INTO tasks (title, description, completed) VALUES ($1, $2, $3) RETURNING task_id",
     [title, description, completed || false],
   )
-  return res.status(201).json({ id: dbResult.rows[0].task_id })
+  return res.status(201).json({ id: qr.rows[0].task_id })
 }
 
-// Update a task by ID
-export const updateTask = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
-  // Extract task ID from request parameters
-  const id = req.params.id
-
-  // Extract updated task details from request body
+export const updateTask: Handler = async (req, res) => {
+  const { id } = req.params
   const { title, description, completed } = req.body
-
-  try {
-    // Execute a PostgreSQL query to update the task by ID
-    await pool.query(
-      "UPDATE tasks SET title = $1, description = $2, completed = $3 WHERE task_id = $4",
-      [title, description, completed, id],
-    )
-
-    // Return a JSON response with the updated task details
-    return res.json({
-      message: "Task updated successfully",
-      task: {
-        id,
-        title,
-        description,
-        completed,
-      },
-    })
-  } catch (error) {
-    // Handle errors, log them, and return an internal server error response
-    console.error(error)
-    return res.status(500).json("Internal Server error")
-  }
+  const qr = await db.query(
+    "UPDATE tasks SET title = $1, description = $2, completed = $3 WHERE task_id = $4",
+    [title, description, completed, id],
+  )
+  return res.status(qr.rowCount ? 200 : 404).send()
 }
 
-// Delete a task by ID
-export const deleteTask = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
-  // Extract task ID from request parameters
-  const id = req.params.id
+export const deleteTask: Handler = async (req, res) => {
+  const { id } = req.params
+  const qr = await db.query("DELETE FROM tasks WHERE task_id = $1", [id])
 
-  try {
-    // Execute a PostgreSQL query to delete the task by ID
-    await pool.query("DELETE FROM tasks WHERE id = $1", [id])
-
-    // Return a JSON response indicating successful deletion
-    return res.status(200).json(`Task ${id} deleted successfully`)
-  } catch (error) {
-    // Handle errors, log them, and return an internal server error response
-    console.error(error)
-    return res.status(500).json("Internal Server error")
-  }
+  return res.status(qr.rowCount ? 204 : 404).send()
 }

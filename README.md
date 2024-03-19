@@ -6,11 +6,12 @@
 # Start database and other containers
 docker-compose up
 
-# Add to-do
-curl -H 'Content-Type: application/json' -v localhost:3000/tasks -d '{"title":"Do Homework", "description":"Study for math test"}'
+# Some API curls
+curl -H 'Content-Type: application/json' localhost:3000/tasks -d '{"title":"Do Homework", "description":"Study for math test"}'
+curl -H 'Content-Type: application/json' localhost:3000/tasks
 
 # Set a db conn string var
-db_conn=$(echo "$(cat .env | xargs) echo 'postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}'" | bash) ; echo $db_conn
+set -a ; source .env ; set +a ; db_conn="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}" ; echo $db_conn
 
 # Connect to PSQL shell in Postgres container
 docker-compose exec -it db psql $db_conn

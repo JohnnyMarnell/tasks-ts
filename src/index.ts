@@ -1,35 +1,33 @@
-// Import necessary modules and types
-import express, { Router } from "express"
-import {
-  getTasks,
-  getTaskById,
-  createTask,
-  deleteTask,
-  updateTask,
-} from "./controllers/index.controllers"
-
-// Create an Express application
-const app = express()
-
-// Create a Router instance for handling task-related routes
-const taskRouter = Router()
+import express, { Router, ErrorRequestHandler } from "express"
+import * as routes from "./controllers/index.controllers"
+import crypto from "crypto"
 
 // Configure middleware for parsing JSON and URL-encoded data
+const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-// Define routes for task operations using the taskRouter
-taskRouter.get("/tasks", getTasks)
-taskRouter.get("/tasks/:id", getTaskById)
-taskRouter.post("/tasks", createTask)
-taskRouter.put("/tasks/:id", deleteTask)
-taskRouter.delete("/tasks/:id", updateTask)
-taskRouter.get("/ping", async (req, res) => res.json({ pong: true }))
+// Define routes
+app.get("/tasks", routes.getTasks)
+app.get("/tasks/:id", routes.getTaskById)
+app.post("/tasks", routes.createTask)
+app.put("/tasks/:id", routes.updateTask)
+app.delete("/tasks/:id", routes.deleteTask)
+app.get("/ping", async (req, res) => res.json({ pong: true }))
 
-// Use the taskRouter for paths starting with '/api'
-app.use(taskRouter)
+// I'd like a generic error handler, and have yet to get this to work
+const error: ErrorRequestHandler = async (err, req, res, next) => {
+  const errorId = crypto
+    .createHash("md5")
+    .update(crypto.randomBytes(20))
+    .digest("hex")
+  console.error("Server error", errorId, req.url, err.stack)
 
-// Set up the Express application to listen on port 3000
+  res.status(500).json({ errorId: errorId })
+}
+app.use(error)
+
+// Start server
 const PORT = 3000
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
