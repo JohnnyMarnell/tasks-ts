@@ -1,6 +1,7 @@
 # To-Do App with TypeScript Backend
 
 ## Commands
+
 ```bash
 # Start database and other containers
 docker-compose up
@@ -19,6 +20,7 @@ docker-compose exec -it db psql $db_conn -c 'select * from tasks'
 ```
 
 # Questions
+
 - docker-compose container for typescript
 - original structure from example repo had code duplication for "routes/index". bad bug. and weird. i removed it
 - tsconfig via extending a base

@@ -5,5 +5,5 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "preserveConstEnums": true
-  },
+  }
 }
