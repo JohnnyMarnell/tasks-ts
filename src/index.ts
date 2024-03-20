@@ -1,6 +1,7 @@
 import express, { ErrorRequestHandler } from "express"
 import * as tasks from "./controllers/tasks"
 import crypto from "crypto"
+import asyncHandler from "express-async-handler"
 
 // Configure middleware for parsing JSON and URL-encoded data
 const app = express()
@@ -8,16 +9,16 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 // Define routes
-app.get("/tasks", tasks.getTasks)
-app.get("/tasks/:id", tasks.getTaskById)
-app.post("/tasks", tasks.createTask)
-app.put("/tasks/:id", tasks.updateTask)
-app.delete("/tasks/:id", tasks.deleteTask)
+app.get("/tasks", asyncHandler(tasks.getTasks))
+app.get("/tasks/:id", asyncHandler(tasks.getTaskById))
+app.post("/tasks", asyncHandler(tasks.createTask))
+app.put("/tasks/:id", asyncHandler(tasks.updateTask))
+app.delete("/tasks/:id", asyncHandler(tasks.deleteTask))
 
 app.get("/ping", async (req, res) => res.json({ pong: true }))
 
-// I'd like a generic error handler, and have yet to get this to work at all
-const error: ErrorRequestHandler = async (err, req, res, next) => {
+// Log bubbled up errors, with generated error ID
+const errorLogger: ErrorRequestHandler = async (err, req, res, next) => {
   const errorId = crypto
     .createHash("md5")
     .update(crypto.randomBytes(20))
@@ -26,7 +27,7 @@ const error: ErrorRequestHandler = async (err, req, res, next) => {
 
   res.status(500).json({ errorId: errorId })
 }
-app.use(error)
+app.use(errorLogger)
 
 // Start server
 const PORT = 3000

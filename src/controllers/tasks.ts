@@ -35,6 +35,5 @@ export const updateTask: Handler = async (req, res) => {
 export const deleteTask: Handler = async (req, res) => {
   const { id } = req.params
   const qr = await db.query("DELETE FROM tasks WHERE task_id = $1", [id])
-
   return res.status(qr.rowCount ? 204 : 404).send()
 }
