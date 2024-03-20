@@ -2,6 +2,7 @@ import express, { ErrorRequestHandler } from "express"
 import * as tasks from "./controllers/tasks"
 import crypto from "crypto"
 import asyncHandler from "express-async-handler"
+import { DatabaseError } from "pg"
 
 // Configure middleware for parsing JSON and URL-encoded data
 const app = express()
@@ -19,6 +20,14 @@ app.get("/ping", async (req, res) => res.json({ pong: true }))
 
 // Log bubbled up errors, with generated error ID
 const errorLogger: ErrorRequestHandler = async (err, req, res, next) => {
+  // If db column doesn't exist, or bad value, assume 400 Bad Request
+  if (err instanceof DatabaseError) {
+    if (["42703", "22P02"].includes(err.code || "")) {
+      res.status(400).send()
+      return
+    }
+  }
+
   const errorId = crypto
     .createHash("md5")
     .update(crypto.randomBytes(20))
@@ -34,3 +43,5 @@ const PORT = 3000
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
 })
+
+export default app
