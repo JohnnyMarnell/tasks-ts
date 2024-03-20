@@ -1,6 +1,5 @@
 import { Handler } from "express"
 import { db } from "../database"
-import { DatabaseError } from "pg"
 
 export const getTasks: Handler = async (req, res) => {
   const qr = await db.query("SELECT * FROM tasks")
