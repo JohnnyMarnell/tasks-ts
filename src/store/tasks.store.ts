@@ -6,13 +6,13 @@ export const findAllTasks = async (): Promise<Task[]> => {
 }
 
 export const findTasksById = async (ids: string[]): Promise<Task[]> => {
-  const sql = `SELECT * FROM tasks WHERE task_id IN (${ids.map((v, i) => `$${i + 1}`)})`
+  const sql = `SELECT * FROM tasks WHERE task_id IN (${idx(ids)})`
   const qr = await db.query(sql, ids)
   return qr.rows.map(mapTask)
 }
 
 export const deleteTasksById = async (ids: string[]): Promise<number> => {
-  const sql = `DELETE FROM tasks WHERE task_id IN (${ids.map((v, i) => `$${i + 1}`)})`
+  const sql = `DELETE FROM tasks WHERE task_id IN (${idx(ids)})`
   const qr = await db.query(sql, ids)
   return qr.rowCount ?? 0
 }
@@ -28,9 +28,8 @@ export const createTask = async (task: Task): Promise<string> => {
 
 export const updateTask = async (id: string, task: Task): Promise<boolean> => {
   const [keys, vals] = [Object.keys(task).join(","), Object.values(task)]
-  const idx = vals.map((v, i) => `$${i + 1}`).join(",")
   const qr = await db.query(
-    `UPDATE tasks SET (${keys}) = ROW(${idx}) WHERE task_id = $${vals.length + 1}`,
+    `UPDATE tasks SET (${keys}) = ROW(${idx(vals)}) WHERE task_id = $${vals.length + 1}`,
     vals.concat([id]),
   )
   return qr.rowCount === 1
@@ -57,7 +56,5 @@ export class TaskEntity implements Task {
   }
 }
 
-const mapTask = (row: Task): TaskEntity => {
-  const task = new TaskEntity(row)
-  return task
-}
+const idx = (arr: any[]) => arr.map((v, i) => `$${i + 1}`).join(",")
+const mapTask = (row: Task) => new TaskEntity(row)
