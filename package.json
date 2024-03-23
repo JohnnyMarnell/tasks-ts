@@ -1,7 +1,7 @@
 {
-  "name": "todo",
+  "name": "todo-ts-example",
   "version": "1.0.0",
-  "description": "todo",
+  "description": "Simple ToDo App backend in TypeScript",
   "main": "src/index.js",
   "scripts": {
     "start": "dotenv -- tsx src",
@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@tsconfig/node21": "^21.0.1",
+    "@tsconfig/node20": "^20.1.2",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
     "@types/pg": "^8.11.2",
