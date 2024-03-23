@@ -22,6 +22,9 @@ app.get("/ping", async (req, res) => res.json({ pong: true }))
 const errorLogger: ErrorRequestHandler = async (err, req, res, next) => {
   // If db column doesn't exist, or bad value, assume 400 Bad Request
   if (err instanceof DatabaseError) {
+    const cause: any = err.cause
+    console.warn("Database error", req.url, cause?.stack || err.stack)
+
     if (["42703", "22P02"].includes(err.code || "")) {
       res.status(400).send()
       return
