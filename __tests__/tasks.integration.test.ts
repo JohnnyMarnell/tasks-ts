@@ -22,6 +22,10 @@ describe("tasks service", () => {
     expect(res.body.task_id).toBe(id)
     expect(res.body.title).toBe(title)
 
+    // Find it in all
+    res = await request(app).get(`/tasks`)
+    expect(res.body.tasks.map((t: any) => t.task_id)).toContain(id)
+
     // Delete it
     res = await request(app).delete(`/tasks/${id}`)
     expect(res.statusCode).toBe(204)

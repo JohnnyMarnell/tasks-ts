@@ -1,9 +1,10 @@
 import { Handler } from "express"
-import { db } from "../database"
+import * as store from "../store/tasks.store"
+import db from "../store/database"
 
 export const getTasks: Handler = async (req, res) => {
-  const qr = await db.query("SELECT * FROM tasks")
-  return res.status(200).json(qr.rows)
+  const tasks = await store.findAllTasks()
+  return res.status(200).json({ tasks: tasks })
 }
 
 export const getTaskById: Handler = async (req, res) => {

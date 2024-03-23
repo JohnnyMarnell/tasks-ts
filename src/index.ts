@@ -1,5 +1,5 @@
 import express, { ErrorRequestHandler } from "express"
-import * as tasks from "./controllers/tasks"
+import * as tasks from "./controllers/tasks.controller"
 import crypto from "crypto"
 import asyncHandler from "express-async-handler"
 import { DatabaseError } from "pg"

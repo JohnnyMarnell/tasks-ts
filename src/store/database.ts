@@ -1,6 +1,6 @@
 import { Pool } from "pg"
 
-export const db = new Pool({
+export default new Pool({
   database: process.env.POSTGRES_DB || "postgres",
   user: process.env.POSTGRES_USER || "postgres",
   host: process.env.POSTGRES_HOST || "localhost",
