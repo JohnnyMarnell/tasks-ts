@@ -10,6 +10,14 @@ See [package.json](./package.json) of course for some example commands, e.g. `pn
 # Start database and other containers
 docker-compose up
 
+# Or start just the database container
+docker-compose up
+# Run the itegration tests using db container
+pnpm test
+# Or start a debuggable, hot reloading instance on host / non Docker
+pnpm dev
+
+
 # Some API curls
 curl -H 'Content-Type: application/json' localhost:3000/tasks -d '{"title":"Do Homework", "description":"Study for math test"}'
 curl -H 'Content-Type: application/json' localhost:3000/tasks
@@ -19,7 +27,6 @@ set -a ; source .env ; set +a ; db_conn="postgres://${POSTGRES_USER}:${POSTGRES_
 
 # Connect to PSQL shell in Postgres container
 docker-compose exec -it db psql $db_conn
-
 # Query DB
 docker-compose exec -it db psql $db_conn -c 'select * from tasks'
 ```
@@ -34,7 +41,7 @@ docker-compose exec -it db psql $db_conn -c 'select * from tasks'
 - pnpm is ok choice ya? i like the space opt
 - no semi colons ok?
 - `tsx` seems modern fast choice?
-- handle the default for a new Task is incomplete (complete == false), currently using OR pipe in controller, redundant since database scheme effectively defines the default. but how to balance code looking weird(er)?
+- handle the default for a new Task is incomplete (complete == false), currently using OR pipe in controller / entity, redundant since database scheme effectively defines the default. but how to balance code looking weird(er)?
 - docker-compose api container improvement?
 - ✅ docker-compose container for typescript, close enough
 - ✅ tsconfig via extending a base
