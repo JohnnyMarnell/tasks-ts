@@ -19,6 +19,7 @@ describe("tasks service", () => {
     expect(res.statusCode).toBe(200)
     expect(res.body.task_id).toBe(id)
     expect(res.body.title).toBe("Homework 1")
+    expect(res.body.status).toBe("PENDING")
     const created = new Date(res.body.created_at).getTime()
     const updated = new Date(res.body.updated_at).getTime()
     expect(created).toBeGreaterThan(now)
