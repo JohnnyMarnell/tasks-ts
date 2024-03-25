@@ -1,4 +1,4 @@
-import { Handler } from "express"
+import type { Handler } from "express"
 import * as store from "../store/tasks.store"
 
 export const getTasks: Handler = async (req, res) => {

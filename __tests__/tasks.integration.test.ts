@@ -1,5 +1,5 @@
-import app from "../src/index"
 import request from "supertest"
+import app from "../src/index"
 
 describe("tasks service", () => {
   test("handles basic CRUD", async () => {
@@ -8,9 +8,7 @@ describe("tasks service", () => {
     expect(res.statusCode).toBe(400)
 
     // Successful create
-    res = await request(app)
-      .post("/tasks")
-      .send({ title: "Homework 1", description: "Study" })
+    res = await request(app).post("/tasks").send({ title: "Homework 1", description: "Study" })
     expect(res.statusCode).toBe(201)
     const id = res.body.task_id
     expect(id).toBeTruthy()

@@ -56,5 +56,5 @@ export class TaskEntity implements Task {
   }
 }
 
-const idx = (arr: any[]) => arr.map((v, i) => `$${i + 1}`).join(",")
+const idx = (arr: unknown[]) => arr.map((v, i) => `$${i + 1}`).join(",")
 const mapTask = (row: Task) => new TaskEntity(row)

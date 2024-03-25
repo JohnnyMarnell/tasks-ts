@@ -1,8 +1,8 @@
-import express, { ErrorRequestHandler } from "express"
-import * as tasks from "./controllers/tasks.controller"
-import crypto from "crypto"
+import crypto from "node:crypto"
+import express, { type ErrorRequestHandler } from "express"
 import asyncHandler from "express-async-handler"
 import { DatabaseError } from "pg"
+import * as tasks from "./controllers/tasks.controller"
 
 // Configure middleware for parsing JSON and URL-encoded data
 const app = express()
@@ -31,10 +31,7 @@ const errorLogger: ErrorRequestHandler = async (err, req, res, next) => {
     }
   }
 
-  const errorId = crypto
-    .createHash("md5")
-    .update(crypto.randomBytes(20))
-    .digest("hex")
+  const errorId = crypto.createHash("md5").update(crypto.randomBytes(20)).digest("hex")
   console.error("Server error", errorId, req.url, err.stack)
 
   res.status(500).json({ errorId: errorId })

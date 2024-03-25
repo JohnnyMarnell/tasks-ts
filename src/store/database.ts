@@ -5,6 +5,6 @@ export default new Pool({
   user: process.env.POSTGRES_USER || "postgres",
   host: process.env.POSTGRES_HOST || "localhost",
 
-  port: parseInt(process.env.POSTGRES_PORT || "5432"),
+  port: Number.parseInt(process.env.POSTGRES_PORT || "5432"),
   password: process.env.POSTGRES_PASSWORD || "localdev",
 })
