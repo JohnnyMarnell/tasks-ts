@@ -40,7 +40,8 @@ export interface Task {
   description?: string
   completed: boolean
   created_at: Date
+  updated_at: Date
 }
 
 export type uuid = string
-const idx = (arr: unknown[]) => arr.map((v, i) => `$${i + 1}`).join(",")
+const idx = (arr: (object | uuid)[]) => arr.map((v, i) => `$${i + 1}`).join(",")

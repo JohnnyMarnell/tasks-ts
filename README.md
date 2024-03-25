@@ -11,14 +11,15 @@ See [package.json](./package.json) of course for some example commands, e.g. `pn
 docker-compose up
 
 # Or start just the database container
-docker-compose up
-# Run the itegration tests using db container
+docker-compose up db
+# Run the itegration tests using this db container
 pnpm test
-# Or start a debuggable, hot reloading instance on host / non Docker
+# Start a debuggable, hot reloading instance on host, outside of Docker
 pnpm dev
 
 
 # Some API curls
+curl -H 'Content-Type: application/json' localhost:3000/tasks/360796c6-ea44-11ee-8608-0242ac130002
 curl -H 'Content-Type: application/json' localhost:3000/tasks -d '{"title":"Do Homework", "description":"Study for math test"}'
 curl -H 'Content-Type: application/json' localhost:3000/tasks
 

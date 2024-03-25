@@ -14,13 +14,18 @@ describe("tasks service", () => {
     expect(id).toBeTruthy()
 
     // Now look it up by ID
+    const now = Date.now() - 60_000
     res = await request(app).get(`/tasks/${id}`)
     expect(res.statusCode).toBe(200)
     expect(res.body.task_id).toBe(id)
     expect(res.body.title).toBe("Homework 1")
+    const created = new Date(res.body.created_at).getTime()
+    const updated = new Date(res.body.updated_at).getTime()
+    expect(created).toBeGreaterThan(now)
+    expect(updated).toBeGreaterThan(now)
 
     // Find it in all
-    res = await request(app).get(`/tasks`)
+    res = await request(app).get("/tasks")
     expect(res.body.tasks.map((t: any) => t.task_id)).toContain(id)
 
     // Update title and verify change
@@ -29,6 +34,8 @@ describe("tasks service", () => {
     res = await request(app).get(`/tasks/${id}`)
     expect(res.body.title).toBe("HW 2")
     expect(res.body.description).toBe("Study")
+    expect(new Date(res.body.updated_at).getTime()).toBeGreaterThan(updated)
+    expect(new Date(res.body.created_at).getTime()).toEqual(created)
 
     // Delete it
     res = await request(app).delete(`/tasks/${id}`)
