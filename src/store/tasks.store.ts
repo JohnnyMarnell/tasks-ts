@@ -2,31 +2,30 @@ import db from "../store/database"
 
 export const findAllTasks = async (): Promise<Task[]> => {
   const qr = await db.query("SELECT * FROM tasks")
-  return qr.rows.map(mapTask)
+  return qr.rows
 }
 
-export const findTasksById = async (ids: string[]): Promise<Task[]> => {
+export const findTasksById = async (ids: uuid[]): Promise<Task[]> => {
   const sql = `SELECT * FROM tasks WHERE task_id IN (${idx(ids)})`
   const qr = await db.query(sql, ids)
-  return qr.rows.map(mapTask)
+  return qr.rows
 }
 
-export const deleteTasksById = async (ids: string[]): Promise<number> => {
+export const deleteTasksById = async (ids: uuid[]): Promise<number> => {
   const sql = `DELETE FROM tasks WHERE task_id IN (${idx(ids)})`
   const qr = await db.query(sql, ids)
   return qr.rowCount ?? 0
 }
 
-export const createTask = async (task: Task): Promise<string> => {
-  const t = new TaskEntity(task)
+export const createTask = async (task: Task): Promise<uuid> => {
   const qr = await db.query(
     "INSERT INTO tasks (title, description, completed) VALUES ($1, $2, $3) RETURNING task_id",
-    [t.title, t.description, t.completed],
+    [task.title, task.description, task.completed ?? false],
   )
   return qr.rows[0].task_id
 }
 
-export const updateTask = async (id: string, task: Task): Promise<boolean> => {
+export const updateTask = async (id: uuid, task: Task): Promise<boolean> => {
   const [keys, vals] = [Object.keys(task).join(","), Object.values(task)]
   const qr = await db.query(
     `UPDATE tasks SET (${keys}) = ROW(${idx(vals)}) WHERE task_id = $${vals.length + 1}`,
@@ -36,25 +35,12 @@ export const updateTask = async (id: string, task: Task): Promise<boolean> => {
 }
 
 export interface Task {
-  task_id: string | null
-  title: string | null
-  description: string | null
+  task_id: uuid
+  title?: string
+  description?: string
   completed: boolean
+  created_at: Date
 }
 
-export class TaskEntity implements Task {
-  readonly task_id: string | null
-  readonly title: string | null
-  readonly description: string | null
-  readonly completed: boolean
-
-  constructor(opts: TaskEntity) {
-    this.task_id = opts.task_id
-    this.title = opts.title
-    this.description = opts.description
-    this.completed = opts.completed ?? false
-  }
-}
-
+export type uuid = string
 const idx = (arr: unknown[]) => arr.map((v, i) => `$${i + 1}`).join(",")
-const mapTask = (row: Task) => new TaskEntity(row)
